@@ -1,5 +1,6 @@
 import 'package:expense_tracker/Page/addExpense.dart';
 import 'package:expense_tracker/Page/addIncome.dart';
+import 'package:expense_tracker/Services/authLayout.dart';
 import 'package:expense_tracker/Services/authServices.dart';
 import 'package:expense_tracker/Widgets/profileCard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,6 +17,11 @@ class _ProfileState extends State<Profile> {
   logOut() {
     try {
       authservices.value.signOut();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const AuthLayout()),
+        (route) => false,
+      );
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(
         context,

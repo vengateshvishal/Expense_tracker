@@ -1,3 +1,4 @@
+import 'package:expense_tracker/Page/Signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -51,20 +52,28 @@ class Onboardscreen extends StatelessWidget {
                       child: Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.circular(60.0),
-                        child: Container(
-                          height: 50.0,
-                          decoration: BoxDecoration(
-                            color: Colors.purple,
-                            borderRadius: BorderRadius.circular(60.0),
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                            child: Text(
-                              "Get Started",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Signup()),
+                            );
+                          },
+                          child: Container(
+                            height: 50.0,
+                            decoration: BoxDecoration(
+                              color: Colors.purple,
+                              borderRadius: BorderRadius.circular(60.0),
+                            ),
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(
+                              child: Text(
+                                "Get Started",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
