@@ -1,5 +1,6 @@
 import 'package:expense_tracker/Page/addExpense.dart';
 import 'package:expense_tracker/Page/addIncome.dart';
+import 'package:expense_tracker/Page/deleteAccount.dart';
 import 'package:expense_tracker/Services/authLayout.dart';
 import 'package:expense_tracker/Services/authServices.dart';
 import 'package:expense_tracker/Widgets/profileCard.dart';
@@ -140,7 +141,9 @@ class _ProfileState extends State<Profile> {
             ),
             SizedBox(height: 30.0),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>Deleteaccount()));
+              },
               child: ProfileCard2(icon: Icons.delete, label: "Delete Account"),
             ),
           ],
