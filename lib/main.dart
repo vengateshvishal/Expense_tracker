@@ -1,6 +1,5 @@
 import 'package:expense_tracker/Page/addExpense.dart';
 import 'package:expense_tracker/Page/addIncome.dart';
-import 'package:expense_tracker/Page/deleteAccount.dart';
 import 'package:expense_tracker/Page/home.dart';
 import 'package:expense_tracker/Page/profile.dart';
 import 'package:expense_tracker/Services/authLayout.dart';
@@ -18,6 +17,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: Deleteaccount());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: AuthLayout());
   }
 }
