@@ -14,19 +14,60 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  logOut() {
-    try {
-      authservices.value.signOut();
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const AuthLayout()),
-        (route) => false,
-      );
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
-    }
+  Future<void> logOut() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap a button to dismiss
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Logout',
+            style: TextStyle(
+              color: Colors.purple,
+              fontSize: 18.0,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          content: const Text(
+            'Do you really want to logout?',
+            style: TextStyle(fontSize: 15.0),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel',style: TextStyle(fontSize: 16.0),),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+            ),
+            TextButton(
+              child: const Text('Logout', style: TextStyle(color: Colors.red,fontSize: 16.0)),
+              onPressed: () async {
+                Navigator.of(context).pop(); // Dismiss the dialog
+                try {
+                  // Call the existing sign out service
+                  await authservices.value.signOut();
+
+                  // Ensure page changes by clearing the navigation stack
+                  if (mounted) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AuthLayout(),
+                      ),
+                      (route) => false,
+                    );
+                  }
+                } on FirebaseAuthException catch (e) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(e.toString())));
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
