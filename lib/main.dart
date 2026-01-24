@@ -1,7 +1,3 @@
-import 'package:expense_tracker/Page/addExpense.dart';
-import 'package:expense_tracker/Page/addIncome.dart';
-import 'package:expense_tracker/Page/home.dart';
-import 'package:expense_tracker/Page/profile.dart';
 import 'package:expense_tracker/Services/authLayout.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
