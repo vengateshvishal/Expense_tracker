@@ -10,7 +10,7 @@ class Deleteaccount extends StatefulWidget {
 }
 
 class _DeleteaccountState extends State<Deleteaccount> {
-    String email = "", password = "";
+  
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 final _formKey = GlobalKey<FormState>();
