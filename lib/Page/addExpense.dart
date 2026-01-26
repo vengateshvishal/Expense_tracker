@@ -1,3 +1,5 @@
+import 'package:expense_tracker/Services/authServices.dart';
+import 'package:expense_tracker/Services/dataBase.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -10,9 +12,27 @@ class Addexpense extends StatefulWidget {
 
 class _AddexpenseState extends State<Addexpense> {
   String? selectedCategory;
+
+  String? Id = authservices.value.currentUser?.uid;
   final List<String> categories = ['Food', 'Transport', 'Entertainment'];
 
   DateTime selectedDate = DateTime.now();
+
+  final _formKey = GlobalKey<FormState>();
+
+  TextEditingController amountController = TextEditingController();
+
+  addExpense() async {
+    Map<String, dynamic> addExpense = {
+      'amount': amountController.text,
+      'category': selectedCategory,
+      'date': selectedDate,
+    };
+    await Database().addUserExpense(addExpense, Id!);
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Expense Added Successfully")));
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -65,110 +85,140 @@ class _AddexpenseState extends State<Addexpense> {
               ),
             ),
             SizedBox(height: 10.0),
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Amount",
-                hintStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-              ),
-            ),
-            SizedBox(height: 20.0),
-            Text(
-              "Select Category",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10.0),
             Container(
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(231, 224, 234, 100),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: DropdownButton<String>(
-                isExpanded: true,
-                hint: Padding(
-                  padding: EdgeInsets.only(left: 20.0),
-                  child: Text(
-                    "Select a category",
-                    style: TextStyle(color: Colors.black, fontSize: 16),
-                  ),
-                ),
-                value: selectedCategory,
-                items: categories.map((String category) {
-                  return DropdownMenuItem<String>(
-                    value: category,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 10.0),
-                      child: Text(category),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      controller: amountController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter an amount';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Amount",
+                        hintStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                      ),
                     ),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedCategory = newValue;
-                  });
-                },
-                underline: SizedBox(),
+                    SizedBox(height: 20.0),
+                    Text(
+                      "Select Category",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(231, 224, 234, 100),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        hint: Padding(
+                          padding: EdgeInsets.only(left: 20.0),
+                          child: Text(
+                            "Select a category",
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                          ),
+                        ),
+                        value: selectedCategory,
+                        items: categories.map((String category) {
+                          return DropdownMenuItem<String>(
+                            value: category,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10.0),
+                              child: Text(category),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedCategory = newValue;
+                          });
+                        },
+                        underline: SizedBox(),
+                      ),
+                    ),
+                    SizedBox(height: 40.0),
+                    Row(
+                      children: [
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.purple,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              _selectDate(context);
+                            },
+                            child: Icon(Icons.date_range, color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(width: 10.0),
+                        Text(
+                          DateFormat('dd-MM-yyyy').format(selectedDate),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-            SizedBox(height: 40.0),
-            Row(
-              children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.purple,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      _selectDate(context);
-                    },
-                    child: Icon(Icons.date_range, color: Colors.white),
-                  ),
-                ),
-                SizedBox(width: 10.0),
-                Text(
-                  DateFormat('dd-MM-yyyy').format(selectedDate),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
+
             SizedBox(height: 30.0),
             Center(
               child: Material(
                 borderRadius: BorderRadius.circular(60.0),
                 elevation: 5.0,
-                child: Container(
-                  height: 50.0,
-                  width: MediaQuery.of(context).size.width / 2,
-                  decoration: BoxDecoration(
-                    color: Colors.purple,
-                    borderRadius: BorderRadius.circular(60.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Submit",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
+                child: GestureDetector(
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      addExpense();
+                    }
+                    setState(() {
+                      amountController.clear();
+                      selectedCategory = null;
+                      selectedDate = DateTime.now();
+                    });
+                  },
+                  child: Container(
+                    height: 50.0,
+                    width: MediaQuery.of(context).size.width / 2,
+                    decoration: BoxDecoration(
+                      color: Colors.purple,
+                      borderRadius: BorderRadius.circular(60.0),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Submit",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

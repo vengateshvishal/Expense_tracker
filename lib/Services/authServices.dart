@@ -20,12 +20,11 @@ class Authservices {
 
   Future<UserCredential> createAccount({
     required String email,
-    required String password,
+    required String password
   }) async {
-    return await firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    UserCredential userCredential = await firebaseAuth
+        .createUserWithEmailAndPassword(email: email, password: password);
+    return userCredential;
   }
 
   Future<void> resetPassword({required String email}) async {

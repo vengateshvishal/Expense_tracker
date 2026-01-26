@@ -1,6 +1,7 @@
 import 'package:expense_tracker/Page/Signin.dart';
 import 'package:expense_tracker/Page/home.dart';
 import 'package:expense_tracker/Services/authServices.dart';
+import 'package:expense_tracker/Services/dataBase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -49,10 +50,16 @@ class _SignupState extends State<Signup> {
     }
 
     try {
-      await authservices.value.createAccount(
+      UserCredential userCredential = await authservices.value.createAccount(
         email: email,
-        password: password,
+        password: password
       );
+      String userId = userCredential.user!.uid;
+
+      await Database().addUserInfo({
+        'name': nameController.text.trim(),
+        'email': email,
+      }, userId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
@@ -64,9 +71,7 @@ class _SignupState extends State<Signup> {
       );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => Home(),
-        ),
+        MaterialPageRoute(builder: (context) => Home()),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -114,10 +119,7 @@ class _SignupState extends State<Signup> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
-          content: Text(
-            'An unexpected error occurred',
-            style: TextStyle(fontSize: 18.0),
-          ),
+          content: Text('${e.toString()}', style: TextStyle(fontSize: 18.0)),
         ),
       );
     }
@@ -372,7 +374,6 @@ class _SignupState extends State<Signup> {
                         ),
                       ),
                     ),
-                    
                   ],
                 ),
               ),
