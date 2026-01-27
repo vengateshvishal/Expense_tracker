@@ -14,24 +14,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
-String id = authservices.value.currentUser!.uid;
+  String id = authservices.value.currentUser!.uid;
 
   @override
   // ignore: must_call_super
   initState() {
-  getUserFname();
+    getUserFname();
   }
- String? userName ;
 
-  
-void getUserFname() async {
+  String? userName;
+
+  void getUserFname() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? localName = prefs.getString("userName");
 
     if (localName == null) {
       // Direct assignment from the source of truth (the DB)
-      localName = await Database().getUserName(id);
+      localName = await Database().getUserDetails(id);
       await prefs.setString("userName", localName ?? "");
     }
 
@@ -40,8 +39,6 @@ void getUserFname() async {
       userName = localName;
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +63,7 @@ void getUserFname() async {
                       ),
                     ),
                     Text(
-                      userName??"Guest",
+                      userName ?? "Guest",
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
@@ -76,7 +73,10 @@ void getUserFname() async {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Profile()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Profile()),
+                    );
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(60.0),
@@ -140,37 +140,67 @@ void getUserFname() async {
                       SizedBox(
                         height: 170,
                         width: 150,
-                        child: PieChart(
-                          PieChartData(
-                            sections: [
-                              PieChartSectionData(
-                                value: 75,
-                                color: Colors.red,
-                                radius: 50,
+                        child: Builder(
+                          builder: (context) {
+                            final sections = [
+                              {'value': 75.0, 'color': Colors.red},
+                              {'value': 100.0, 'color': Colors.blue},
+                              {'value': 80.0, 'color': Colors.orange},
+                            ];
+                            final total = sections.fold<double>(
+                              0,
+                              (sum, section) =>
+                                  sum + (section['value'] as double),
+                            );
+
+                            return PieChart(
+                              PieChartData(
+                                sections: List.generate(sections.length, (
+                                  index,
+                                ) {
+                                  final value =
+                                      sections[index]['value'] as double;
+                                  final percentage = ((value / total) * 100)
+                                      .toStringAsFixed(0);
+
+                                  return PieChartSectionData(
+                                    value: value,
+                                    color: sections[index]['color'] as Color,
+                                    radius: 50,
+                                    title: '$percentage%',
+                                    titleStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                    ),
+                                  );
+                                }),
                               ),
-                              PieChartSectionData(
-                                value: 100,
-                                color: Colors.blue,
-                                radius: 50,
-                              ),
-                              PieChartSectionData(
-                                value: 80,
-                                color: Colors.orange,
-                                radius: 50,
-                              ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          LegendItem(color: Colors.red, amount: "Food"),
+                          LegendItem(
+                            color: Colors.red,
+                            amount: "Food",
+                            price: "\$60",
+                          ),
                           SizedBox(height: 10.0),
-                          LegendItem(color: Colors.blue, amount: "Transport"),
+                          LegendItem(
+                            color: Colors.blue,
+                            amount: "Transport",
+                            price: "\$100",
+                          ),
 
                           SizedBox(height: 10.0),
-                          LegendItem(color: Colors.orange, amount: "Other"),
+                          LegendItem(
+                            color: Colors.orange,
+                            amount: "Other",
+                            price: "\$80",
+                          ),
                         ],
                       ),
                     ],
@@ -317,8 +347,10 @@ void getUserFname() async {
               height: 80,
               padding: EdgeInsets.all(10.0),
               width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(color: Colors.purple,
-                      borderRadius: BorderRadius.circular(20.0),),
+              decoration: BoxDecoration(
+                color: Colors.purple,
+                borderRadius: BorderRadius.circular(20.0),
+              ),
               child: Row(
                 children: [
                   Container(

@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class LegendItem extends StatelessWidget {
   final Color color;
   final String amount;
+  final String? price;
 
   const LegendItem({
     super.key,
     required this.color,
     required this.amount,
+    this.price,
   });
 
   @override
@@ -33,6 +35,15 @@ class LegendItem extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
+            if (price != null)
+              Text(
+                price!,
+                style: TextStyle(
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[600],
+                ),
+              ),
           ],
         ),
       ],
