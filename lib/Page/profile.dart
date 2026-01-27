@@ -3,9 +3,11 @@ import 'package:expense_tracker/Page/addIncome.dart';
 import 'package:expense_tracker/Page/deleteAccount.dart';
 import 'package:expense_tracker/Services/authLayout.dart';
 import 'package:expense_tracker/Services/authServices.dart';
+import 'package:expense_tracker/Services/dataBase.dart';
 import 'package:expense_tracker/Widgets/profileCard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -15,10 +17,37 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String id = authservices.value.currentUser!.uid;
+
+  @override
+  // ignore: must_call_super
+  initState() {
+  getUserDetails();
+  }
+ String? userName ;
+ String? userEmail ;
+
+  
+void getUserDetails() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? localName = prefs.getString("userName");
+    String? localEmail = prefs.getString("userEmail");
+
+     if (localName == null || localEmail == null) {
+      final userDetails = await Database().getUserName(id);
+      localName = userDetails['name'];
+      localEmail = userDetails['email'];
+    }
+    setState(() {
+      userName = localName;
+      userEmail = localEmail;
+    });
+  }
+
   Future<void> logOut() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // User must tap a button to dismiss
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(
@@ -102,12 +131,12 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             SizedBox(height: 50.0),
-            Profilecard1(icon: Icons.person, label: "Name", value: "Vishal"),
+            Profilecard1(icon: Icons.person, label: "Name", value: userName??"Guest"),
             SizedBox(height: 30.0),
             Profilecard1(
               icon: Icons.email,
               label: "Email",
-              value: "vengateshvishal12@gmail.com",
+              value: userEmail??"Not Provided",
             ),
             SizedBox(height: 30.0),
             GestureDetector(

@@ -1,6 +1,9 @@
 import 'package:expense_tracker/Page/profile.dart';
+import 'package:expense_tracker/Services/authServices.dart';
+import 'package:expense_tracker/Services/dataBase.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Widgets/legend_item.dart';
 
 class Home extends StatefulWidget {
@@ -11,6 +14,35 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+String id = authservices.value.currentUser!.uid;
+
+  @override
+  // ignore: must_call_super
+  initState() {
+  getUserFname();
+  }
+ String? userName ;
+
+  
+void getUserFname() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? localName = prefs.getString("userName");
+
+    if (localName == null) {
+      // Direct assignment from the source of truth (the DB)
+      localName = await Database().getUserName(id);
+      await prefs.setString("userName", localName ?? "");
+    }
+
+    // Call setState ONCE with the final value
+    setState(() {
+      userName = localName;
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +66,7 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Text(
-                      "Vishal",
+                      userName??"Guest",
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
