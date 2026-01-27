@@ -15,4 +15,12 @@ class Database {
         .collection('Expenses')
         .add(userExpense);
   }
+
+   Future addUserIncome(Map<String, dynamic> userIncome, String Id) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(Id)
+        .collection('Incomes')
+        .add(userIncome);
+  }
 }
