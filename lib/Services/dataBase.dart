@@ -25,7 +25,7 @@ class Database {
         .add(userIncome);
   }
 
-  Future getUserName(String id) async {
+  Future getUserDetails(String id) async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(id)

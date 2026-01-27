@@ -22,19 +22,19 @@ class _ProfileState extends State<Profile> {
   @override
   // ignore: must_call_super
   initState() {
-  getUserDetails();
+  UserDetails();
   }
  String? userName ;
  String? userEmail ;
 
   
-void getUserDetails() async {
+void UserDetails() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? localName = prefs.getString("userName");
     String? localEmail = prefs.getString("userEmail");
 
      if (localName == null || localEmail == null) {
-      final userDetails = await Database().getUserName(id);
+      final userDetails = await Database().getUserDetails(id);
       localName = userDetails['name'];
       localEmail = userDetails['email'];
     }
