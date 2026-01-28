@@ -167,7 +167,7 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       Text(
-                        "\$${userExpense!}",
+                        "\$${userExpense}",
                         style: TextStyle(
                           color: const Color.fromARGB(255, 221, 78, 68),
                           fontSize: 25.0,

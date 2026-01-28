@@ -128,7 +128,12 @@ class _AddexpenseState extends State<Addexpense> {
                         color: const Color.fromRGBO(231, 224, 234, 100),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      child: DropdownButton<String>(
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none
+                          )
+                        ),
                         isExpanded: true,
                         hint: Padding(
                           padding: EdgeInsets.only(left: 20.0),
@@ -140,6 +145,7 @@ class _AddexpenseState extends State<Addexpense> {
                         value: selectedCategory,
                         items: categories.map((String category) {
                           return DropdownMenuItem<String>(
+                            
                             value: category,
                             child: Padding(
                               padding: EdgeInsets.only(left: 10.0),
@@ -152,7 +158,12 @@ class _AddexpenseState extends State<Addexpense> {
                             selectedCategory = newValue;
                           });
                         },
-                        underline: SizedBox(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please select a category';
+                          }
+                          return null;
+                        },
                       ),
                     ),
                     SizedBox(height: 40.0),
