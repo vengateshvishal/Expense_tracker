@@ -14,7 +14,7 @@ class _AddexpenseState extends State<Addexpense> {
   String? selectedCategory;
 
   String? Id = authservices.value.currentUser?.uid;
-  final List<String> categories = ['Food', 'Transport', 'Entertainment'];
+  final List<String> categories = ['Food', 'Transport', 'Others'];
 
   DateTime selectedDate = DateTime.now();
 

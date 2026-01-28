@@ -15,7 +15,44 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String id = authservices.value.currentUser!.uid;
-  int? userExpense;
+  int userExpense = 0;
+  double userFoodExpense = 0.0;
+  double userTransportExpense = 0.0;
+  double userOtherExpense = 0.0;
+
+  getOthersExpense()async
+  {double totalOtherExpense = 0;
+    var otherExpense = await Database().getUserOthersExpense(id);
+    for (var i = 0; i < otherExpense.length; i++) {
+      totalOtherExpense += int.parse(otherExpense[i]['amount']);
+    }
+    setState(() {
+      userOtherExpense=totalOtherExpense;
+    });
+
+  }
+
+  getTransportExpense() async {
+    double totalTransportExpense = 0;
+    var transportExpense = await Database().getUserTransportExpense(id);
+    for (var i = 0; i < transportExpense.length; i++) {
+      totalTransportExpense += int.parse(transportExpense[i]['amount']);
+    }
+    setState(() {
+      userTransportExpense=totalTransportExpense;
+    });
+  }
+
+  getFoodExpense() async {
+    double totalFoodExpense = 0;
+    var foodExpense = await Database().getUserFoodExpense(id);
+    for (var i = 0; i < foodExpense.length; i++) {
+      totalFoodExpense += int.parse(foodExpense[i]['amount']);
+    }
+    setState(() {
+      userFoodExpense = totalFoodExpense;
+    });
+  }
 
   getExpense() async {
     int totalExpense = 0;
@@ -34,6 +71,9 @@ class _HomeState extends State<Home> {
   initState() {
     getUserFname();
     getExpense();
+    getFoodExpense();
+    getTransportExpense();
+    getOthersExpense();
   }
 
   String? userName;
@@ -74,7 +114,7 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Text(
-                      userExpense.toString(),
+                      userName != null ? "$userName" : "User",
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
@@ -127,7 +167,7 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       Text(
-                        userExpense != null ? "\$${userExpense!}" : "\$0",
+                        "\$${userExpense!}",
                         style: TextStyle(
                           color: const Color.fromARGB(255, 221, 78, 68),
                           fontSize: 25.0,
@@ -154,9 +194,9 @@ class _HomeState extends State<Home> {
                         child: Builder(
                           builder: (context) {
                             final sections = [
-                              {'value': 75.0, 'color': Colors.red},
-                              {'value': 100.0, 'color': Colors.blue},
-                              {'value': 80.0, 'color': Colors.orange},
+                              {'value': userFoodExpense, 'color': Colors.red},
+                              {'value': userTransportExpense, 'color': Colors.blue},
+                              {'value':userOtherExpense, 'color': Colors.orange},
                             ];
                             final total = sections.fold<double>(
                               0,
@@ -197,20 +237,20 @@ class _HomeState extends State<Home> {
                           LegendItem(
                             color: Colors.red,
                             amount: "Food",
-                            price: "\$60",
+                            price: "\$${userFoodExpense.toInt()}",
                           ),
                           SizedBox(height: 10.0),
                           LegendItem(
                             color: Colors.blue,
                             amount: "Transport",
-                            price: "\$100",
+                            price: "\$${userTransportExpense.toInt()}"
                           ),
 
                           SizedBox(height: 10.0),
                           LegendItem(
                             color: Colors.orange,
                             amount: "Other",
-                            price: "\$80",
+                            price: "\$${userOtherExpense.toInt()}",
                           ),
                         ],
                       ),

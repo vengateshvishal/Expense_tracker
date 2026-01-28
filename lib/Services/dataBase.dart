@@ -51,4 +51,37 @@ class Database {
 
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
+  Future getUserFoodExpense(String id) async {
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance
+                .collection('users')
+                .doc(id)
+                .collection('Expenses').where('category',isEqualTo: 'Food')
+                .get()
+            as QuerySnapshot;
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+  Future getUserTransportExpense(String id) async {
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance
+                .collection('users')
+                .doc(id)
+                .collection('Expenses').where('category',isEqualTo: 'Transport')
+                .get()
+            as QuerySnapshot;
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+  Future getUserOthersExpense(String id) async {
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance
+                .collection('users')
+                .doc(id)
+                .collection('Expenses').where('category',isEqualTo: 'Others')
+                .get()
+            as QuerySnapshot;
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
 }
