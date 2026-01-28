@@ -25,6 +25,7 @@ class Database {
         .add(userIncome);
   }
 
+  // get form DB
   Future getUserDetails(String id) async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection('users')
@@ -37,5 +38,17 @@ class Database {
 
     prefs.setString("userName", userName);
     prefs.setString("userEmail", userEmail);
+  }
+
+  Future getUserExpense(String id) async {
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance
+                .collection('users')
+                .doc(id)
+                .collection('Expenses')
+                .get()
+            as QuerySnapshot;
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
   }
 }

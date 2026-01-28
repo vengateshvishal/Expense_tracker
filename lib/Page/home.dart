@@ -15,11 +15,25 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String id = authservices.value.currentUser!.uid;
+  int? userExpense;
+
+  getExpense() async {
+    int totalExpense = 0;
+    var expenseData = await Database().getUserExpense(id);
+    for (var i = 0; i < expenseData.length; i++) {
+      totalExpense += int.parse(expenseData[i]['amount']);
+    }
+
+    setState(() {
+      userExpense = totalExpense;
+    });
+  }
 
   @override
   // ignore: must_call_super
   initState() {
     getUserFname();
+    getExpense();
   }
 
   String? userName;
@@ -29,12 +43,9 @@ class _HomeState extends State<Home> {
     String? localName = prefs.getString("userName");
 
     if (localName == null) {
-      // Direct assignment from the source of truth (the DB)
       localName = await Database().getUserDetails(id);
       await prefs.setString("userName", localName ?? "");
     }
-
-    // Call setState ONCE with the final value
     setState(() {
       userName = localName;
     });
@@ -63,7 +74,7 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Text(
-                      userName ?? "Guest",
+                      userExpense.toString(),
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
@@ -116,7 +127,7 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       Text(
-                        "\$300",
+                        userExpense != null ? "\$${userExpense!}" : "\$0",
                         style: TextStyle(
                           color: const Color.fromARGB(255, 221, 78, 68),
                           fontSize: 25.0,
