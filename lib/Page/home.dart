@@ -20,32 +20,34 @@ class _HomeState extends State<Home> {
   double userTransportExpense = 0.0;
   double userOtherExpense = 0.0;
 
-  getOthersExpense()async
-  {double totalOtherExpense = 0;
-    var otherExpense = await Database().getUserOthersExpense(id);
+  getOthersExpense() async {
+    double totalOtherExpense = 0;
+    var otherExpense = await Database().getUserExpenseByCategory(id, 'Others');
     for (var i = 0; i < otherExpense.length; i++) {
       totalOtherExpense += int.parse(otherExpense[i]['amount']);
     }
     setState(() {
-      userOtherExpense=totalOtherExpense;
+      userOtherExpense = totalOtherExpense;
     });
-
   }
 
   getTransportExpense() async {
     double totalTransportExpense = 0;
-    var transportExpense = await Database().getUserTransportExpense(id);
+    var transportExpense = await Database().getUserExpenseByCategory(
+      id,
+      'Transport',
+    );
     for (var i = 0; i < transportExpense.length; i++) {
       totalTransportExpense += int.parse(transportExpense[i]['amount']);
     }
     setState(() {
-      userTransportExpense=totalTransportExpense;
+      userTransportExpense = totalTransportExpense;
     });
   }
 
   getFoodExpense() async {
     double totalFoodExpense = 0;
-    var foodExpense = await Database().getUserFoodExpense(id);
+    var foodExpense = await Database().getUserExpenseByCategory(id, 'Food');
     for (var i = 0; i < foodExpense.length; i++) {
       totalFoodExpense += int.parse(foodExpense[i]['amount']);
     }
@@ -69,7 +71,7 @@ class _HomeState extends State<Home> {
   @override
   // ignore: must_call_super
   initState() {
-    getUserFname();
+    getUsername();
     getExpense();
     getFoodExpense();
     getTransportExpense();
@@ -78,7 +80,7 @@ class _HomeState extends State<Home> {
 
   String? userName;
 
-  void getUserFname() async {
+  void getUsername() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? localName = prefs.getString("userName");
 
@@ -195,8 +197,14 @@ class _HomeState extends State<Home> {
                           builder: (context) {
                             final sections = [
                               {'value': userFoodExpense, 'color': Colors.red},
-                              {'value': userTransportExpense, 'color': Colors.blue},
-                              {'value':userOtherExpense, 'color': Colors.orange},
+                              {
+                                'value': userTransportExpense,
+                                'color': Colors.blue,
+                              },
+                              {
+                                'value': userOtherExpense,
+                                'color': Colors.orange,
+                              },
                             ];
                             final total = sections.fold<double>(
                               0,
@@ -243,7 +251,7 @@ class _HomeState extends State<Home> {
                           LegendItem(
                             color: Colors.blue,
                             amount: "Transport",
-                            price: "\$${userTransportExpense.toInt()}"
+                            price: "\$${userTransportExpense.toInt()}",
                           ),
 
                           SizedBox(height: 10.0),
