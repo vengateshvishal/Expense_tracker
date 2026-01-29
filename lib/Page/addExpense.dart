@@ -26,7 +26,7 @@ class _AddexpenseState extends State<Addexpense> {
     Map<String, dynamic> addExpense = {
       'amount': amountController.text,
       'category': selectedCategory,
-      'date': selectedDate,
+      'date': DateFormat('yyyy-MM-dd').format(selectedDate),
     };
     await Database().addUserExpense(addExpense, Id!);
     ScaffoldMessenger.of(
@@ -131,8 +131,8 @@ class _AddexpenseState extends State<Addexpense> {
                       child: DropdownButtonFormField<String>(
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
-                            borderSide: BorderSide.none
-                          )
+                            borderSide: BorderSide.none,
+                          ),
                         ),
                         isExpanded: true,
                         hint: Padding(
@@ -145,7 +145,6 @@ class _AddexpenseState extends State<Addexpense> {
                         value: selectedCategory,
                         items: categories.map((String category) {
                           return DropdownMenuItem<String>(
-                            
                             value: category,
                             child: Padding(
                               padding: EdgeInsets.only(left: 10.0),

@@ -3,6 +3,7 @@ import 'package:expense_tracker/Services/authServices.dart';
 import 'package:expense_tracker/Services/dataBase.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Widgets/legend_item.dart';
 
@@ -16,9 +17,55 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String id = authservices.value.currentUser!.uid;
   int userExpense = 0;
-  double userFoodExpense = 0.0;
+  double userFoodExpense = 0;
   double userTransportExpense = 0.0;
   double userOtherExpense = 0.0;
+
+  getDashBoardDetails() {
+    getUsername();
+    getExpense();
+    getFoodExpense();
+    getTransportExpense();
+    getOthersExpense();
+  }
+
+  Future<void> userMonthlyData() async {
+    final List userDateDetails = await Database().getUserExpense(id);
+    String currentMonth = DateFormat('MM').format(DateTime.now());
+
+    int tempExpense = 0;
+    double tempFood = 0;
+    double tempTransport = 0;
+    double tempOthers = 0;
+
+    for (var entry in userDateDetails) {
+      String entryMonth = DateFormat(
+        'MM',
+      ).format(DateTime.parse(entry['date']));
+      if (entryMonth == currentMonth) {
+        tempExpense += int.parse(entry['amount'].toString());
+        List temp = [];
+        temp.add(entry['category']);
+        for (var i = 0; i < temp.length; i++) {
+          if (temp[i] == 'Food') {
+            tempFood += double.parse(entry['amount']);
+          } else if (temp[i] == 'Transport') {
+            tempTransport += double.parse(entry['amount']);
+          } else if (temp[i] == 'Others') {
+            tempOthers += double.parse(entry['amount']);
+          }
+        }
+      }
+    }
+    // print(tempFood);
+
+    setState(() {
+      userExpense = tempExpense;
+      userFoodExpense = tempFood;
+      userTransportExpense = tempTransport;
+      userOtherExpense = tempOthers;
+    });
+  }
 
   getOthersExpense() async {
     double totalOtherExpense = 0;
@@ -71,11 +118,7 @@ class _HomeState extends State<Home> {
   @override
   // ignore: must_call_super
   initState() {
-    getUsername();
-    getExpense();
-    getFoodExpense();
-    getTransportExpense();
-    getOthersExpense();
+    getDashBoardDetails();
   }
 
   String? userName;
@@ -273,20 +316,25 @@ class _HomeState extends State<Home> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width / 2.5,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(60.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "This Month",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w500,
+                GestureDetector(
+                  onTap: () {
+                    userMonthlyData();
+                  },
+                  child: Container(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(60.0),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "This Month",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
