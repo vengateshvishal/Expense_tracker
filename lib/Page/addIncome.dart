@@ -16,7 +16,7 @@ class _AddIncomeState extends State<AddIncome> {
   addIncome() async {
     Map<String, dynamic> addIncome = {
       'amount': amountController.text,
-      'date': selectedDate,
+      'date': DateFormat('yyyy-MM-dd').format(selectedDate),
     };
     await Database().addUserIncome(addIncome, Id!);
     ScaffoldMessenger.of(

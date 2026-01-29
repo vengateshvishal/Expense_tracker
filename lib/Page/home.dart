@@ -17,9 +17,11 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String id = authservices.value.currentUser!.uid;
   int userExpense = 0;
+  int userIncome = 0;
   double userFoodExpense = 0;
   double userTransportExpense = 0.0;
   double userOtherExpense = 0.0;
+  String dashBoardData = "Overall Expense";
 
   getDashBoardDetails() {
     getUsername();
@@ -27,6 +29,89 @@ class _HomeState extends State<Home> {
     getFoodExpense();
     getTransportExpense();
     getOthersExpense();
+    userAnnualData();
+    getIncome();
+  }
+
+  getIncome() async {
+    int totalIncome = 0;
+    var incomeData = await Database().getUserIncome(id);
+    for (var i = 0; i < incomeData.length; i++) {
+      totalIncome += int.parse(incomeData[i]['amount']);
+    }
+    setState(() {
+      userIncome = totalIncome;
+    });
+  }
+
+  getMonthlyIncome() async {
+    int tempIncome = 0;
+    var incomeData = await Database().getUserIncome(id);
+    String currentMonth = DateFormat('MM').format(DateTime.now());
+    for (var entry in incomeData) {
+      String entryMonth = DateFormat(
+        'MM',
+      ).format(DateTime.parse(entry['date']));
+      if (entryMonth == currentMonth) {
+        tempIncome += int.parse(entry['amount'].toString());
+      }
+    }
+    setState(() {
+      userIncome = tempIncome;
+    });
+  }
+
+  getAnnualIncome() async {
+    int tempIncome = 0;
+    var incomeData = await Database().getUserIncome(id);
+    String currentYear = DateFormat('yyy').format(DateTime.now());
+    for (var entry in incomeData) {
+      String entryYear = DateFormat(
+        'yyy',
+      ).format(DateTime.parse(entry['date']));
+      if (entryYear == currentYear) {
+        tempIncome += int.parse(entry['amount'].toString());
+      }
+    }
+    setState(() {
+      userIncome = tempIncome;
+    });
+  }
+
+  Future<void> userAnnualData() async {
+    int tempExpense = 0;
+    double tempFood = 0;
+    double tempTransport = 0;
+    double tempOthers = 0;
+    final List userDateDetails = await Database().getUserExpense(id);
+    String currentYear = DateFormat('yyy').format(DateTime.now());
+
+    for (var entry in userDateDetails) {
+      String entryYear = DateFormat(
+        'yyy',
+      ).format(DateTime.parse(entry['date']));
+      if (entryYear == currentYear) {
+        tempExpense += int.parse(entry['amount'].toString());
+        List temp = [];
+        temp.add(entry['category']);
+        for (var i = 0; i < temp.length; i++) {
+          if (temp[i] == 'Food') {
+            tempFood += double.parse(entry['amount']);
+          } else if (temp[i] == 'Transport') {
+            tempTransport += double.parse(entry['amount']);
+          } else if (temp[i] == 'Others') {
+            tempOthers += double.parse(entry['amount']);
+          }
+        }
+      }
+    }
+    setState(() {
+      userExpense = tempExpense;
+      userFoodExpense = tempFood;
+      userTransportExpense = tempTransport;
+      userOtherExpense = tempOthers;
+      dashBoardData = DateFormat('yyy').format(DateTime.now());
+    });
   }
 
   Future<void> userMonthlyData() async {
@@ -57,13 +142,12 @@ class _HomeState extends State<Home> {
         }
       }
     }
-    // print(tempFood);
-
     setState(() {
       userExpense = tempExpense;
       userFoodExpense = tempFood;
       userTransportExpense = tempTransport;
       userOtherExpense = tempOthers;
+      dashBoardData = DateFormat('MMMM').format(DateTime.now());
     });
   }
 
@@ -222,7 +306,7 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                   Text(
-                    "1 Jan 2026 - 31 Jan 2026",
+                    dashBoardData,
                     style: TextStyle(
                       color: const Color.fromARGB(136, 0, 0, 0),
                       fontSize: 15.0,
@@ -319,6 +403,7 @@ class _HomeState extends State<Home> {
                 GestureDetector(
                   onTap: () {
                     userMonthlyData();
+                    getMonthlyIncome();
                   },
                   child: Container(
                     height: 50,
@@ -342,20 +427,26 @@ class _HomeState extends State<Home> {
                 Material(
                   borderRadius: BorderRadius.circular(60.0),
                   elevation: 5.0,
-                  child: Container(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    decoration: BoxDecoration(
-                      color: Colors.purple,
-                      borderRadius: BorderRadius.circular(60.0),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "This Year",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w500,
+                  child: GestureDetector(
+                    onTap: () {
+                      userAnnualData();
+                      getAnnualIncome();
+                    },
+                    child: Container(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      decoration: BoxDecoration(
+                        color: Colors.purple,
+                        borderRadius: BorderRadius.circular(60.0),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "This Year",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -387,7 +478,7 @@ class _HomeState extends State<Home> {
                       ),
                       SizedBox(height: 5.0),
                       Text(
-                        "+\$5000",
+                        "+\$$userIncome",
                         style: TextStyle(
                           color: Colors.green,
                           fontSize: 18,
@@ -402,7 +493,6 @@ class _HomeState extends State<Home> {
                           borderRadius: BorderRadius.circular(20.0),
                           color: Colors.green,
                         ),
-                        child: Text(" "),
                       ),
                     ],
                   ),
@@ -427,7 +517,7 @@ class _HomeState extends State<Home> {
                       ),
                       SizedBox(height: 5.0),
                       Text(
-                        "+\$5000",
+                        '-\$$userExpense',
                         style: TextStyle(
                           color: Colors.redAccent,
                           fontSize: 18,
@@ -442,7 +532,6 @@ class _HomeState extends State<Home> {
                           borderRadius: BorderRadius.circular(20.0),
                           color: const Color.fromARGB(255, 240, 93, 93),
                         ),
-                        child: Text(" "),
                       ),
                     ],
                   ),

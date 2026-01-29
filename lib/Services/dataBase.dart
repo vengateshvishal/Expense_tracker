@@ -51,6 +51,17 @@ class Database {
 
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
+  Future getUserIncome(String id) async {
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance
+                .collection('users')
+                .doc(id)
+                .collection('Incomes')
+                .get()
+            as QuerySnapshot;
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
 
   Future<List<Map<String, dynamic>>> getUserExpenseByCategory(
     String id,
@@ -66,17 +77,5 @@ class Database {
     return snapshot.docs
         .map((doc) => doc.data() as Map<String, dynamic>)
         .toList();
-  }
-
-Future getDate(String id) async {
-    QuerySnapshot snapshot =
-        await FirebaseFirestore.instance
-                .collection('users')
-                .doc(id)
-                .collection('Expenses')
-                .get()
-            as QuerySnapshot;
-
-    return snapshot.docs.map((doc) => doc.data()).toList();
   }
 }
