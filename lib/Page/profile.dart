@@ -7,7 +7,6 @@ import 'package:expense_tracker/Services/dataBase.dart';
 import 'package:expense_tracker/Widgets/profileCard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -29,18 +28,13 @@ class _ProfileState extends State<Profile> {
 
   
 void UserDetails() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? localName = prefs.getString("userName");
-    String? localEmail = prefs.getString("userEmail");
-
-     if (localName == null || localEmail == null) {
       final userDetails = await Database().getUserDetails(id);
-      localName = userDetails['name'];
-      localEmail = userDetails['email'];
-    }
+      String localName = userDetails['name'];
+      String localEmail=userDetails['email'];
+    print(localEmail);
     setState(() {
-      userName = localName;
-      userEmail = localEmail;
+      userName=localName;
+      userEmail=localEmail;
     });
   }
 

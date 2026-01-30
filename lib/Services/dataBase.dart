@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Database {
   Future addUserInfo(Map<String, dynamic> userInfoMap, String Id) async {
@@ -26,19 +25,22 @@ class Database {
   }
 
   // get form DB
-  Future getUserDetails(String id) async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(id)
-        .get();
+Future getUserDetails(String id) async {
+  DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(id)
+      .get();
+  return {
+    'name': snapshot.get('name'),
+    'email': snapshot.get('email'),
+  };
+  // final SharedPreferences prefs = await SharedPreferences.getInstance();
+  // String userName = snapshot.get('name') ?? '';
+  // String userEmail = snapshot.get('email') ?? '';
 
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String userName = snapshot.get('name') ?? '';
-    String userEmail = snapshot.get('email') ?? '';
-
-    prefs.setString("userName", userName);
-    prefs.setString("userEmail", userEmail);
-  }
+  // prefs.setString("userName", userName);
+  // prefs.setString("userEmail", userEmail);
+}
 
   Future getUserExpense(String id) async {
     QuerySnapshot snapshot =

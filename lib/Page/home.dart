@@ -4,7 +4,6 @@ import 'package:expense_tracker/Services/dataBase.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../Widgets/legend_item.dart';
 
 class Home extends StatefulWidget {
@@ -208,15 +207,10 @@ class _HomeState extends State<Home> {
   String? userName;
 
   void getUsername() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? localName = prefs.getString("userName");
-
-    if (localName == null) {
-      localName = await Database().getUserDetails(id);
-      await prefs.setString("userName", localName ?? "");
-    }
+    final userDetails = await Database().getUserDetails(id);
+      String localName = userDetails['name'];
     setState(() {
-      userName = localName;
+      userName=localName;
     });
   }
 
