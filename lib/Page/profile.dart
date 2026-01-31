@@ -21,20 +21,20 @@ class _ProfileState extends State<Profile> {
   @override
   // ignore: must_call_super
   initState() {
-  UserDetails();
+    UserDetails();
   }
- String? userName ;
- String? userEmail ;
 
-  
-void UserDetails() async {
-      final userDetails = await Database().getUserDetails(id);
-      String localName = userDetails['name'];
-      String localEmail=userDetails['email'];
+  String? userName;
+  String? userEmail;
+
+  void UserDetails() async {
+    final userDetails = await Database().getUserDetails(id);
+    String localName = userDetails['name'];
+    String localEmail = userDetails['email'];
     print(localEmail);
     setState(() {
-      userName=localName;
-      userEmail=localEmail;
+      userName = localName;
+      userEmail = localEmail;
     });
   }
 
@@ -58,13 +58,16 @@ void UserDetails() async {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel',style: TextStyle(fontSize: 16.0),),
+              child: const Text('Cancel', style: TextStyle(fontSize: 16.0)),
               onPressed: () {
                 Navigator.of(context).pop(); // Dismiss the dialog
               },
             ),
             TextButton(
-              child: const Text('Logout', style: TextStyle(color: Colors.red,fontSize: 16.0)),
+              child: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.red, fontSize: 16.0),
+              ),
               onPressed: () async {
                 Navigator.of(context).pop(); // Dismiss the dialog
                 try {
@@ -98,14 +101,25 @@ void UserDetails() async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text(
-          "Profile",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context,"refersh");
+              },
+              child: Icon(Icons.arrow_back)),
+            SizedBox(width: MediaQuery.of(context).size.width / 3),
+            Text(
+              "Profile",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
       body: Container(
@@ -125,12 +139,16 @@ void UserDetails() async {
               ),
             ),
             SizedBox(height: 50.0),
-            Profilecard1(icon: Icons.person, label: "Name", value: userName??"Guest"),
+            Profilecard1(
+              icon: Icons.person,
+              label: "Name",
+              value: userName ?? "Guest",
+            ),
             SizedBox(height: 30.0),
             Profilecard1(
               icon: Icons.email,
               label: "Email",
-              value: userEmail??"Not Provided",
+              value: userEmail ?? "Not Provided",
             ),
             SizedBox(height: 30.0),
             GestureDetector(
@@ -165,7 +183,10 @@ void UserDetails() async {
             SizedBox(height: 30.0),
             GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>Deleteaccount()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Deleteaccount()),
+                );
               },
               child: ProfileCard2(icon: Icons.delete, label: "Delete Account"),
             ),

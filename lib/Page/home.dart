@@ -208,9 +208,9 @@ class _HomeState extends State<Home> {
 
   void getUsername() async {
     final userDetails = await Database().getUserDetails(id);
-      String localName = userDetails['name'];
+    String localName = userDetails['name'];
     setState(() {
-      userName=localName;
+      userName = localName;
     });
   }
 
@@ -250,7 +250,11 @@ class _HomeState extends State<Home> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Profile()),
-                    );
+                    ).then((value) {
+                      setState(() {
+                        getDashBoardDetails();
+                      });
+                    });
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(60.0),
