@@ -34,12 +34,6 @@ Future getUserDetails(String id) async {
     'name': snapshot.get('name'),
     'email': snapshot.get('email'),
   };
-  // final SharedPreferences prefs = await SharedPreferences.getInstance();
-  // String userName = snapshot.get('name') ?? '';
-  // String userEmail = snapshot.get('email') ?? '';
-
-  // prefs.setString("userName", userName);
-  // prefs.setString("userEmail", userEmail);
 }
 
   Future getUserExpense(String id) async {

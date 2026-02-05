@@ -60,7 +60,7 @@ class _ProfileState extends State<Profile> {
             TextButton(
               child: const Text('Cancel', style: TextStyle(fontSize: 16.0)),
               onPressed: () {
-                Navigator.of(context).pop(); // Dismiss the dialog
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
@@ -69,12 +69,9 @@ class _ProfileState extends State<Profile> {
                 style: TextStyle(color: Colors.red, fontSize: 16.0),
               ),
               onPressed: () async {
-                Navigator.of(context).pop(); // Dismiss the dialog
+                Navigator.of(context).pop();
                 try {
-                  // Call the existing sign out service
                   await authservices.value.signOut();
-
-                  // Ensure page changes by clearing the navigation stack
                   if (mounted) {
                     Navigator.pushAndRemoveUntil(
                       context,
@@ -87,7 +84,9 @@ class _ProfileState extends State<Profile> {
                 } on FirebaseAuthException catch (e) {
                   ScaffoldMessenger.of(
                     context,
-                  ).showSnackBar(SnackBar(content: Text(e.toString())));
+                  ).showSnackBar(SnackBar(
+                    behavior: SnackBarBehavior.floating,
+                    content: Text(e.toString())));
                 }
               },
             ),

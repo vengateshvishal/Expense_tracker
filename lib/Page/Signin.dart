@@ -38,7 +38,15 @@ class _SigninState extends State<Signin> {
         email: emailController.text,
         password: passwordController.text,
       );
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text("Login Successfully"),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 4),
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An error occurred';
 
@@ -60,6 +68,7 @@ class _SigninState extends State<Signin> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          behavior: SnackBarBehavior.floating,
           content: Text(errorMessage),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 4),
@@ -220,7 +229,8 @@ class _SigninState extends State<Signin> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => Forgotpassword(),
+                                          builder: (context) =>
+                                              Forgotpassword(),
                                         ),
                                       );
                                     },
@@ -247,7 +257,7 @@ class _SigninState extends State<Signin> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        Navigator.push(
+                                        Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => Signup(),
@@ -273,13 +283,16 @@ class _SigninState extends State<Signin> {
                                     Center(
                                       child: GestureDetector(
                                         onTap: () {
-                                          if (_formKey.currentState!.validate()) {
+                                          if (_formKey.currentState!
+                                              .validate()) {
                                             userLogin();
                                           }
                                         },
                                         child: Container(
                                           width:
-                                              MediaQuery.of(context).size.width /
+                                              MediaQuery.of(
+                                                context,
+                                              ).size.width /
                                               2,
                                           child: Material(
                                             borderRadius: BorderRadius.circular(

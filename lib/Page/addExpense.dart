@@ -19,6 +19,7 @@ class _AddexpenseState extends State<Addexpense> {
   DateTime selectedDate = DateTime.now();
 
   final _formKey = GlobalKey<FormState>();
+  bool isLoading=false;
 
   TextEditingController amountController = TextEditingController();
 
@@ -29,9 +30,12 @@ class _AddexpenseState extends State<Addexpense> {
       'date': DateFormat('yyyy-MM-dd').format(selectedDate),
     };
     await Database().addUserExpense(addExpense, Id!);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Expense Added Successfully")));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text("Expense Added Successfully"),
+      ),
+    );
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -62,180 +66,183 @@ class _AddexpenseState extends State<Addexpense> {
           ),
         ),
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20.0),
-            Center(
-              child: Image(
-                image: AssetImage("Assets/Image/expense.png"),
-                height: 200.0,
-                width: 200.0,
+      body: SingleChildScrollView (
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20.0),
+              Center(
+                child: Image(
+                  image: AssetImage("Assets/Image/expense.png"),
+                  height: 200.0,
+                  width: 200.0,
+                ),
               ),
-            ),
-            SizedBox(height: 20.0),
-            Text(
-              "Enter Amount",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+              SizedBox(height: 20.0),
+              Text(
+                "Enter Amount",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 10.0),
-            Container(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      controller: amountController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an amount';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Amount",
-                        hintStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                      ),
-                    ),
-                    SizedBox(height: 20.0),
-                    Text(
-                      "Select Category",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(231, 224, 234, 100),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        isExpanded: true,
-                        hint: Padding(
-                          padding: EdgeInsets.only(left: 20.0),
-                          child: Text(
-                            "Select a category",
-                            style: TextStyle(color: Colors.black, fontSize: 16),
-                          ),
-                        ),
-                        value: selectedCategory,
-                        items: categories.map((String category) {
-                          return DropdownMenuItem<String>(
-                            value: category,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Text(category),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedCategory = newValue;
-                          });
-                        },
+              SizedBox(height: 10.0),
+              Container(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        controller: amountController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please select a category';
+                            return 'Please enter an amount';
                           }
                           return null;
                         },
-                      ),
-                    ),
-                    SizedBox(height: 40.0),
-                    Row(
-                      children: [
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.purple,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              _selectDate(context);
-                            },
-                            child: Icon(Icons.date_range, color: Colors.white),
-                          ),
-                        ),
-                        SizedBox(width: 10.0),
-                        Text(
-                          DateFormat('dd-MM-yyyy').format(selectedDate),
-                          style: TextStyle(
+                        decoration: InputDecoration(
+                          hintText: "Amount",
+                          hintStyle: TextStyle(
                             color: Colors.black,
-                            fontSize: 18.0,
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      SizedBox(height: 20.0),
+                      Text(
+                        "Select Category",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(231, 224, 234, 100),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          isExpanded: true,
+                          hint: Padding(
+                            padding: EdgeInsets.only(left: 20.0),
+                            child: Text(
+                              "Select a category",
+                              style: TextStyle(color: Colors.black, fontSize: 16),
+                            ),
+                          ),
+                          value: selectedCategory,
+                          items: categories.map((String category) {
+                            return DropdownMenuItem<String>(
+                              value: category,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(category),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedCategory = newValue;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a category';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 40.0),
+                      Row(
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.purple,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                _selectDate(context);
+                              },
+                              child: Icon(Icons.date_range, color: Colors.white),
+                            ),
+                          ),
+                          SizedBox(width: 10.0),
+                          Text(
+                            DateFormat('dd-MM-yyyy').format(selectedDate),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-
-            SizedBox(height: 30.0),
-            Center(
-              child: Material(
-                borderRadius: BorderRadius.circular(60.0),
-                elevation: 5.0,
-                child: GestureDetector(
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      addExpense();
-                    }
-                    setState(() {
-                      amountController.clear();
-                      selectedCategory = null;
-                      selectedDate = DateTime.now();
-                    });
-                  },
-                  child: Container(
-                    height: 50.0,
-                    width: MediaQuery.of(context).size.width / 2,
-                    decoration: BoxDecoration(
-                      color: Colors.purple,
-                      borderRadius: BorderRadius.circular(60.0),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Submit",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
+        
+              SizedBox(height: 30.0),
+              Center(
+                child: Material(
+                  borderRadius: BorderRadius.circular(60.0),
+                  elevation: 5.0,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (_formKey.currentState!.validate()) {
+        
+                        addExpense();
+                      }
+                      setState(() {
+                        amountController.clear();
+                        selectedCategory = null;
+                        selectedDate = DateTime.now();
+                      });
+                    },
+                    child: Container(
+                      height: 50.0,
+                      width: MediaQuery.of(context).size.width / 2,
+                      decoration: BoxDecoration(
+                        color: Colors.purple,
+                        borderRadius: BorderRadius.circular(60.0),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Submit",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -19,9 +19,19 @@ class _AddIncomeState extends State<AddIncome> {
       'date': DateFormat('yyyy-MM-dd').format(selectedDate),
     };
     await Database().addUserIncome(addIncome, Id!);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Income Added Successfully")));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        elevation: 5.0,
+        content: Center(
+          child: Text(
+            "Income Added Successfully",
+            style: TextStyle(fontSize: 18.0),
+          ),
+        ),
+      ),
+    );
   }
 
   TextEditingController amountController = TextEditingController();
@@ -58,118 +68,120 @@ class _AddIncomeState extends State<AddIncome> {
           ),
         ),
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20.0),
-              Center(
-                child: Image(
-                  image: AssetImage("Assets/Image/income.png"),
-                  height: 200.0,
-                  width: 200.0,
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 20.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20.0),
+                Center(
+                  child: Image(
+                    image: AssetImage("Assets/Image/income.png"),
+                    height: 200.0,
+                    width: 200.0,
+                  ),
                 ),
-              ),
-              SizedBox(height: 20.0),
-              Text(
-                "Enter Amount",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 10.0),
-              TextFormField(
-                controller: amountController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some amount';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  hintText: "Amount",
-                  hintStyle: TextStyle(
+                SizedBox(height: 20.0),
+                Text(
+                  "Enter Amount",
+                  style: TextStyle(
                     color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
                 ),
-              ),
-              SizedBox(height: 30.0),
-              Row(
-                children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.purple,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        _selectDate(context);
-                      },
-                      child: Icon(Icons.date_range, color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(width: 10.0),
-                  Text(
-                    DateFormat('dd-MM-yyyy').format(selectedDate),
-                    style: TextStyle(
+                SizedBox(height: 10.0),
+                TextFormField(
+                  controller: amountController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some amount';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Amount",
+                    hintStyle: TextStyle(
                       color: Colors.black,
-                      fontSize: 18.0,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
                   ),
-                ],
-              ),
-              SizedBox(height: 30.0),
-              Center(
-                child: Material(
-                  borderRadius: BorderRadius.circular(60.0),
-                  elevation: 5.0,
-                  child: GestureDetector(
-                    onTap: () {
-                      if (_formKey.currentState!.validate()) {
-                        addIncome();
-                      }
-                      setState(() {
-                        amountController.clear();
-                        selectedDate = DateTime.now();
-                      });
-                    },
-                    child: Container(
-                      height: 50.0,
-                      width: MediaQuery.of(context).size.width / 2,
+                ),
+                SizedBox(height: 30.0),
+                Row(
+                  children: [
+                    Container(
+                      height: 40,
+                      width: 40,
                       decoration: BoxDecoration(
                         color: Colors.purple,
-                        borderRadius: BorderRadius.circular(60.0),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
-                      child: Center(
-                        child: Text(
-                          "Submit",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
+                      child: GestureDetector(
+                        onTap: () {
+                          _selectDate(context);
+                        },
+                        child: Icon(Icons.date_range, color: Colors.white),
+                      ),
+                    ),
+                    SizedBox(width: 10.0),
+                    Text(
+                      DateFormat('dd-MM-yyyy').format(selectedDate),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30.0),
+                Center(
+                  child: Material(
+                    borderRadius: BorderRadius.circular(60.0),
+                    elevation: 5.0,
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_formKey.currentState!.validate()) {
+                          addIncome();
+                        }
+                        setState(() {
+                          amountController.clear();
+                          selectedDate = DateTime.now();
+                        });
+                      },
+                      child: Container(
+                        height: 50.0,
+                        width: MediaQuery.of(context).size.width / 2,
+                        decoration: BoxDecoration(
+                          color: Colors.purple,
+                          borderRadius: BorderRadius.circular(60.0),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Submit",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

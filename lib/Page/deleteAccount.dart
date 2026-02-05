@@ -1,4 +1,4 @@
-import 'package:expense_tracker/Page/Signup.dart';
+import 'package:expense_tracker/Page/onBoardScreen.dart';
 import 'package:expense_tracker/Services/authServices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -44,13 +44,13 @@ class _DeleteaccountState extends State<Deleteaccount> {
               onPressed: () async {
                 Navigator.of(context).pop();
                 try {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Onboardscreen()),
+                  );
                   await authservices.value.deletedAccount(
                     email: emailController.text,
                     password: passwordController.text,
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Signup()),
                   );
                 } on FirebaseAuthException catch (e) {
                   String errorMessage = 'An error occurred';
@@ -73,6 +73,7 @@ class _DeleteaccountState extends State<Deleteaccount> {
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
+                      behavior: SnackBarBehavior.floating,
                       content: Text(errorMessage),
                       backgroundColor: Colors.red,
                       duration: Duration(seconds: 4),
@@ -105,114 +106,118 @@ class _DeleteaccountState extends State<Deleteaccount> {
         ),
         centerTitle: true,
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 40.0),
-            Center(
-              child: Image(
-                image: AssetImage("Assets/Image/delete.png"),
-                height: 200,
-                width: 200,
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 40.0),
+              Center(
+                child: Image(
+                  image: AssetImage("Assets/Image/delete.png"),
+                  height: 200,
+                  width: 200,
+                ),
               ),
-            ),
-            Container(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 20.0),
-                    Text(
-                      "Email",
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    TextFormField(
-                      controller: emailController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter your email";
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide: BorderSide.none,
+              Container(
+                child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 20.0),
+                        Text(
+                          "Email",
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        filled: true,
-                        hintText: "Enter your email",
-                      ),
-                    ),
-                    SizedBox(height: 20.0),
-                    Text(
-                      "Password",
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    TextFormField(
-                      controller: passwordController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter your email";
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        hintText: "Enter your password",
-                      ),
-                    ),
-                    SizedBox(height: 30.0),
-                    Center(
-                      child: Material(
-                        elevation: 5.0,
-                        borderRadius: BorderRadius.circular(60.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              deleteAccount();
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: emailController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter your email";
                             }
+                            return null;
                           },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: 50.0,
-                            decoration: BoxDecoration(
-                              color: Colors.purple,
-                              borderRadius: BorderRadius.circular(60.0),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                              borderSide: BorderSide.none,
                             ),
-                            child: Center(
-                              child: Text(
-                                "Delete",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
+                            filled: true,
+                            hintText: "Enter your email",
+                          ),
+                        ),
+                        SizedBox(height: 20.0),
+                        Text(
+                          "Password",
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: passwordController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter your email";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            hintText: "Enter your password",
+                          ),
+                        ),
+                        SizedBox(height: 30.0),
+                        Center(
+                          child: Material(
+                            elevation: 5.0,
+                            borderRadius: BorderRadius.circular(60.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (_formKey.currentState!.validate()) {
+                                  deleteAccount();
+                                }
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: 50.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.purple,
+                                  borderRadius: BorderRadius.circular(60.0),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Delete",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

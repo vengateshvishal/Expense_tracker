@@ -36,15 +36,15 @@ class Authservices {
   }
 
   Future<void> deletedAccount({
-    required String email,
-    required String password,
-  }) async {
-    AuthCredential credential = EmailAuthProvider.credential(
-      email: email,
-      password: password,
-    );
-    await currentUser!.reauthenticateWithCredential(credential);
-    await currentUser!.delete();
-    await firebaseAuth.signOut();
-  }
+  required String email,
+  required String password,
+}) async {
+  AuthCredential credential = EmailAuthProvider.credential(
+    email: email,
+    password: password,
+  );
+  await currentUser!.reauthenticateWithCredential(credential);
+  await currentUser!.delete();
+  await firebaseAuth.signOut();
+}
 }

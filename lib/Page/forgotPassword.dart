@@ -20,6 +20,7 @@ class _ForgotpasswordState extends State<Forgotpassword> {
       await authservices.value.resetPassword(email: emailController.text);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.green,
           content: Text(
             'Password reset email sent',
@@ -31,6 +32,7 @@ class _ForgotpasswordState extends State<Forgotpassword> {
       if(e.code=='user-not-found'){
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red,
             content: Text(
               'No user found for that email.',

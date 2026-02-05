@@ -109,7 +109,6 @@ class _HomeState extends State<Home> {
       userFoodExpense = tempFood;
       userTransportExpense = tempTransport;
       userOtherExpense = tempOthers;
-      dashBoardData = DateFormat('yyy').format(DateTime.now());
     });
   }
 
@@ -336,6 +335,19 @@ class _HomeState extends State<Home> {
                               (sum, section) =>
                                   sum + (section['value'] as double),
                             );
+                            if (total <= 0) {
+                              return Center(
+                                child: Text(
+                                  "No Expense\nData",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              );
+                            }
 
                             return PieChart(
                               PieChartData(
@@ -427,6 +439,11 @@ class _HomeState extends State<Home> {
                   elevation: 5.0,
                   child: GestureDetector(
                     onTap: () {
+                      setState(() {
+                        dashBoardData = dashBoardData = DateFormat(
+                          'yyy',
+                        ).format(DateTime.now());
+                      });
                       userAnnualData();
                       getAnnualIncome();
                     },

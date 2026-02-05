@@ -40,19 +40,24 @@ class _SignupState extends State<Signup> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
-          content: Text(
-            'Please fill in all fields',
-            style: TextStyle(fontSize: 18.0),
+          behavior: SnackBarBehavior.floating,
+          elevation: 5.0,
+          content: Center(
+            child: Text(
+              "Please fill in all fields",
+              style: TextStyle(fontSize: 18.0),
+            ),
           ),
         ),
       );
+
       return;
     }
 
     try {
       UserCredential userCredential = await authservices.value.createAccount(
         email: email,
-        password: password
+        password: password,
       );
       String userId = userCredential.user!.uid;
 
@@ -62,6 +67,7 @@ class _SignupState extends State<Signup> {
       }, userId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.green,
           content: Text(
             'Register Successfully',
@@ -77,6 +83,7 @@ class _SignupState extends State<Signup> {
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red,
             content: Text(
               'The password provided is too weak.',
@@ -87,6 +94,7 @@ class _SignupState extends State<Signup> {
       } else if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red,
             content: Text(
               'The account already exists for that email.',
@@ -97,6 +105,7 @@ class _SignupState extends State<Signup> {
       } else if (e.code == 'invalid-email') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red,
             content: Text(
               'Please enter a valid email address.',
@@ -107,6 +116,7 @@ class _SignupState extends State<Signup> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red,
             content: Text(
               'Error: ${e.message}',
@@ -118,6 +128,7 @@ class _SignupState extends State<Signup> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.red,
           content: Text('${e.toString()}', style: TextStyle(fontSize: 18.0)),
         ),
@@ -221,7 +232,7 @@ class _SignupState extends State<Signup> {
                                       }
                                       return null;
                                     },
-                  
+
                                     controller: nameController,
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
